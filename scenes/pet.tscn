@@ -351,7 +351,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_sc3ue")
 }],
 "loop": false,
-"name": &"wake",
+"name": &"wake_up",
 "speed": 5.0
 }]
 
@@ -359,17 +359,19 @@ animations = [{
 radius = 53.0
 height = 234.0
 
-[node name="Pet" type="Area2D" node_paths=PackedStringArray("sprite", "collider")]
+[node name="Pet" type="Area2D" node_paths=PackedStringArray("sprite", "collider", "sub_window", "menu")]
 visibility_layer = 3
 script = ExtResource("1_g2els")
 sprite = NodePath("Sprite")
 collider = NodePath("Collider")
+sub_window = NodePath("Window")
+menu = NodePath("Window/PopupMenu")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 5
 scale = Vector2(10, 10)
 sprite_frames = SubResource("SpriteFrames_y4r1p")
-animation = &"idle"
+animation = &"wake_up"
 autoplay = "sleep_idle"
 
 [node name="Collider" type="CollisionShape2D" parent="."]
@@ -383,11 +385,20 @@ snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 initial_position = 1
 size = Vector2i(320, 320)
-visible = false
+transient = true
+transient_to_focused = true
+exclusive = true
 unresizable = true
 borderless = true
-always_on_top = true
 transparent = true
+popup_window = true
+
+[node name="PopupMenu" type="PopupMenu" parent="Window"]
+visible = true
+transient_to_focused = true
+prefer_native_menu = true
 
 [connection signal="animation_changed" from="Sprite" to="." method="_on_sprite_animation_changed"]
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
+[connection signal="id_pressed" from="Window/PopupMenu" to="." method="_on_popup_menu_id_pressed"]
+[connection signal="popup_hide" from="Window/PopupMenu" to="." method="_on_popup_menu_popup_hide"]
